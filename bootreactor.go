@@ -37,10 +37,14 @@ func NewReactorHandler(listener ClientConnectionHandler) func(w http.ResponseWri
 		}
 
 		go func() {
+			currentState := &DisplayUpdate{}
 			for displayUpdate := range displayChan {
-				err := conn.WriteJSON(displayUpdate)
-				if err != nil {
-					break
+				if !displayUpdate.DeepEqual(currentState) {
+					err := conn.WriteJSON(displayUpdate)
+					if err != nil {
+						break
+					}
+					currentState = displayUpdate
 				}
 			}
 		}()

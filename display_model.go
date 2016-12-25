@@ -25,6 +25,11 @@ type DisplayUpdate struct {
 	Location *string       `json:"location,omitempty"`
 }
 
+func (d *DisplayUpdate) DeepEqual(other *DisplayUpdate) bool {
+
+	return reflect.DeepEqual(d, other)
+}
+
 func (m *DisplayModel) FindElementByID(id string) *DisplayModel {
 	if m.ID == id {
 		return m
