@@ -24,6 +24,8 @@ func ParseDisplayModel(src string) (*DisplayModel, error) {
 
 	stack := []*DisplayModel{}
 
+	inSVG := false
+
 	for {
 		token, err := decoder.Token()
 		// fmt.Println("token", token)
@@ -46,6 +48,9 @@ func ParseDisplayModel(src string) (*DisplayModel, error) {
 			model := &DisplayModel{
 				Element:    t.Name.Local,
 				Attributes: map[string]interface{}{},
+			}
+			if t.Name.Local == "svg" {
+				inSVG = true
 			}
 			for _, attribute := range t.Attr {
 				if attribute.Name.Local == "id" {
@@ -123,6 +128,10 @@ func ParseDisplayModel(src string) (*DisplayModel, error) {
 
 				text := string(t)
 
+				if inSVG {
+					text = strings.TrimSpace(text)
+				}
+
 				if text != "" {
 					model := &DisplayModel{
 						Text: text,
@@ -134,6 +143,9 @@ func ParseDisplayModel(src string) (*DisplayModel, error) {
 		case xml.EndElement:
 			if len(stack) > 1 {
 				stack = stack[:len(stack)-1]
+			}
+			if t.Name.Local == "svg" {
+				inSVG = false
 			}
 		}
 	}
