@@ -1,0 +1,7 @@
+FROM golang:1.7.4
+COPY test-deps /test-deps/
+ENV PATH=$PATH:/test-deps
+COPY . /go/src/github.com/draganm/go-reactor
+WORKDIR /go/src/github.com/draganm/go-reactor
+RUN go get -t ./...  && go install
+CMD ["go","test", "./..."]

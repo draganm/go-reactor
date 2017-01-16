@@ -3,8 +3,7 @@ package path_test
 import (
 	"testing"
 
-	"gitlab.netice9.com/dragan/go-reactor/path"
-
+	"github.com/draganm/go-reactor/path"
 	"github.com/stretchr/testify/assert"
 )
 
