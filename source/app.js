@@ -177,6 +177,8 @@ var Page = React.createClass({
   },
   componentDidMount: function() {
     var that = this;
+    var current = [JSON.parse(JSON.stringify(connectedModel.model))];
+
     modelChangeEmitter.on('modelChange', function(update) {
       if (update.eval) {
         eval(update.eval)
@@ -188,7 +190,14 @@ var Page = React.createClass({
         window.location = update.location
       }
       if (update.model) {
-        that.setState({model: update.model});
+        var toChange = current
+        var index = _.reduce(update.model.sk || [], function(acc, val){
+          toChange = toChange[acc].ch;
+          return val;
+        }, 0);
+        delete(update.model.sk);
+        toChange[index]=update.model;
+        that.setState({model: current[0]});
       }
     });
   },

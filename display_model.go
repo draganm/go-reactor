@@ -3,6 +3,7 @@ package reactor
 import "reflect"
 
 type DisplayModel struct {
+	Skip         []int                  `json:"sk,omitempty"`
 	ID           string                 `json:"id,omitempty"`
 	Element      string                 `json:"el,omitempty"`
 	Text         string                 `json:"te,omitempty"`
