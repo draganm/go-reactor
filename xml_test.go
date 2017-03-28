@@ -1,7 +1,11 @@
 package reactor
 
-import "testing"
-import "github.com/stretchr/testify/require"
+import (
+	"fmt"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
 
 func TestParser(t *testing.T) {
 	m := MustParseDisplayModel(`<test id="abc" htmlID="def" bool:testt="true" bool:testf="false" reportEvents="click input"> test </test>`)
@@ -38,6 +42,46 @@ func TestParserWithIntermittentTags(t *testing.T) {
 	require.Equal(t, " 2 ", m.Children[2].Text)
 	require.Equal(t, " test ", m.Children[0].Text)
 
+}
+
+func TestParseWhitespace(t *testing.T) {
+	cases := []struct {
+		Source         string
+		ExpectedStruct *DisplayModel
+	}{
+		{"<x/>",
+			&DisplayModel{
+				Element:    "x",
+				Attributes: map[string]interface{}{},
+			},
+		},
+
+		{"<x></x>",
+			&DisplayModel{
+				Element:    "x",
+				Attributes: map[string]interface{}{},
+			},
+		},
+
+		{"<x> <y/> </x>",
+			&DisplayModel{
+				Element:    "x",
+				Attributes: map[string]interface{}{},
+				Children: []*DisplayModel{
+					{
+						Element:    "y",
+						Attributes: map[string]interface{}{},
+					},
+				},
+			},
+		},
+	}
+
+	for i, c := range cases {
+		t.Run(fmt.Sprintf("Case %d", i+1), func(t *testing.T) {
+			require.EqualValues(t, c.ExpectedStruct, MustParseDisplayModel(c.Source))
+		})
+	}
 }
 
 func TestParserWithReportEvent(t *testing.T) {
