@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/urfave/negroni"
@@ -75,14 +76,12 @@ func (r *Reactor) Serve(bind string) {
 				// TODO lock etc.
 
 				screenFactory, params := r.findScreenFactoryForPath(path)
-
+				updater := NewrateLimitedScreenUpdater(200*time.Millisecond, func(upd *DisplayUpdate) { uc <- upd })
 				ctx := ScreenContext{
 					Path:         path,
 					ConnectionID: id,
 					Params:       params,
-					UpdateScreen: func(upd *DisplayUpdate) {
-						uc <- upd
-					},
+					UpdateScreen: updater.update,
 				}
 
 				currentScreen := screenFactory(ctx)
@@ -97,12 +96,14 @@ func (r *Reactor) Serve(bind string) {
 							if newPath != path {
 								path = newPath
 								currentScreen.Unmount()
+								updater.close()
 								continue mainLoop
 							}
 						}
 						currentScreen.OnUserEvent(evt)
 					}
 					currentScreen.Unmount()
+					updater.close()
 					return
 				}
 
