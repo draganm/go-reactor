@@ -95,7 +95,7 @@ var _ = Describe("GoReactor", func() {
 			})
 
 			It("Should show the original message message", func(done Done) {
-				Expect(page.First(".top")).To(HaveText("This is a test!"))
+				Eventually(page.First(".top")).Should(HaveText("This is a test!"))
 				close(done)
 			})
 
@@ -106,7 +106,7 @@ var _ = Describe("GoReactor", func() {
 				})
 
 				It("Should show the new message", func(done Done) {
-					Expect(page.First(".top")).To(HaveText("Something else"))
+					Eventually(page.First(".top")).Should(HaveText("Something else"))
 					close(done)
 				})
 
