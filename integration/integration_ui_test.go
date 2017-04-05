@@ -1,6 +1,7 @@
 package integration_test
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -18,7 +19,7 @@ var r *reactor.Reactor
 var _ = BeforeSuite(func(done Done) {
 	r = reactor.New()
 	go r.Serve(":14344")
-	defer close(done)
+	fmt.Println("started server")
 	for {
 		_, err := http.Get("http://localhost:14344/")
 		if err == nil {
@@ -26,9 +27,12 @@ var _ = BeforeSuite(func(done Done) {
 		}
 		time.Sleep(10 * time.Millisecond)
 	}
-	agoutiDriver = agouti.PhantomJS()
+
+	agoutiDriver = agouti.ChromeDriver()
+
 	Expect(agoutiDriver.Start()).To(Succeed())
-})
+	close(done)
+}, 4.0)
 
 var _ = AfterSuite(func(done Done) {
 	Expect(agoutiDriver.Stop()).To(Succeed())
@@ -40,7 +44,18 @@ var _ = Describe("GoReactor", func() {
 
 	BeforeEach(func() {
 		var err error
-		page, err = agoutiDriver.NewPage()
+		page, err = agoutiDriver.NewPage(agouti.Desired(agouti.Capabilities{
+			"chromeOptions": map[string][]string{
+				"args": []string{
+					"headless",
+					// There is no GPU on our Ubuntu box!
+					"disable-gpu",
+
+					// Sandbox requires namespace permissions that we don't have on a container
+					"no-sandbox",
+				},
+			},
+		}))
 		Expect(err).NotTo(HaveOccurred())
 	})
 
@@ -137,7 +152,7 @@ var _ = Describe("GoReactor", func() {
 			})
 
 			It("Should have new status text", func() {
-				Expect(page.First(".status")).To(HaveText("clicked!"))
+				Eventually(page.First(".status")).Should(HaveText("clicked!"))
 			})
 
 		})

@@ -44,6 +44,12 @@ func (r *rateLimitedScreenUpdater) update(update *DisplayUpdate) {
 		r.didUpdateParent = true
 		return
 	}
+
+	// do sent the update if there is something to eval, new title or new location
+	if update.Eval != "" || update.Title != nil || update.Location != nil {
+		r.parent(update)
+	}
+
 	r.pendingUpdate = update
 }
 
