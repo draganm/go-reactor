@@ -19,8 +19,8 @@ type UserEvent struct {
 // ClientConnectionHandler interacts with a newly connected user.
 type ClientConnectionHandler func(chan *DisplayUpdate, chan *UserEvent, *http.Request, string) http.Header
 
-// NewReactorHandler creates a new HTTP Handler for user WebsSocket connections.
-func NewReactorHandler(listener ClientConnectionHandler) func(w http.ResponseWriter, r *http.Request) {
+// newReactorHandler creates a new HTTP Handler for user WebsSocket connections.
+func newReactorHandler(listener ClientConnectionHandler) func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 

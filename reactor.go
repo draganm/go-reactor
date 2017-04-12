@@ -62,7 +62,7 @@ func (r *Reactor) Serve(bind string) {
 	n := negroni.New(handlers...)
 
 	router := httprouter.New()
-	router.HandlerFunc("GET", "/ws", NewReactorHandler(func(uc chan *DisplayUpdate, ue chan *UserEvent, req *http.Request, id string) http.Header {
+	router.HandlerFunc("GET", "/ws", newReactorHandler(func(uc chan *DisplayUpdate, ue chan *UserEvent, req *http.Request, id string) http.Header {
 
 		go func() {
 
@@ -110,7 +110,12 @@ func (r *Reactor) Serve(bind string) {
 			}
 		}()
 
-		return nil
+		header := http.Header{}
+
+		c := http.Cookie{Name: "BR", Value: "true"}
+		header.Add("Set-Cookie", c.String())
+
+		return header
 	}))
 	n.UseHandler(router)
 	n.Run(bind)
