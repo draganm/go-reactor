@@ -81,7 +81,7 @@ func (r *Reactor) Serve(bind string) {
 					Path:         path,
 					ConnectionID: id,
 					Params:       params,
-					UpdateScreen: updater.update,
+					UpdateScreen: newRemoveDuplicatesScreenUpdater(updater.update),
 				}
 
 				currentScreen := screenFactory(ctx)
