@@ -21,8 +21,8 @@ type ReportEvent struct {
 type DisplayUpdate struct {
 	Model    *DisplayModel `json:"model,omitempty"`
 	Eval     string        `json:"eval,omitempty"`
-	Title    *string       `json:"title,omitempty"`
-	Location *string       `json:"location,omitempty"`
+	Title    string        `json:"title,omitempty"`
+	Location string        `json:"location,omitempty"`
 }
 
 func (d *DisplayUpdate) DeepEqual(other *DisplayUpdate) bool {
