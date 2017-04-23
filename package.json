@@ -31,7 +31,7 @@
     "lodash": "^3.10.1",
     "react": "^0.14.8",
     "react-addons-update": "^0.14.8",
-    "react-bootstrap": "^0.29.5",
+    "react-bootstrap": "^0.30.10",
     "react-dom": "^0.14.8",
     "react-dropzone": "^3.5.3",
     "react-file-input": "^0.2.5",

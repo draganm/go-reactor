@@ -64,3 +64,13 @@ func (i *indexScreen) OnUserEvent(evt *reactor.UserEvent) {
 func (i *indexScreen) Unmount() {}
 
 ```
+
+## Updating dependencies
+
+```sh
+npm install
+gulp
+cd public
+go generate
+cd ..
+```
