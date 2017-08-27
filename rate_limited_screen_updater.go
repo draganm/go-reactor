@@ -8,6 +8,7 @@ import (
 type rateLimitedScreenUpdater struct {
 	sync.Mutex
 	ticker          *time.Ticker
+	done            chan interface{}
 	pendingUpdate   *DisplayUpdate
 	parent          func(*DisplayUpdate)
 	didUpdateParent bool
@@ -16,15 +17,25 @@ type rateLimitedScreenUpdater struct {
 
 func NewrateLimitedScreenUpdater(minDuration time.Duration, parent func(*DisplayUpdate)) *rateLimitedScreenUpdater {
 	ticker := time.NewTicker(minDuration)
+	done := make(chan interface{})
 
 	updater := &rateLimitedScreenUpdater{
 		ticker: ticker,
 		parent: parent,
+		done:   done,
 	}
 
 	go func() {
-		for range ticker.C {
-			updater.tick()
+
+		for {
+			select {
+			case <-ticker.C:
+				updater.tick()
+			case _, ok := <-done:
+				if !ok {
+					return
+				}
+			}
 		}
 	}()
 
@@ -70,5 +81,6 @@ func (r *rateLimitedScreenUpdater) close() {
 	defer r.Unlock()
 	r.closed = true
 	r.ticker.Stop()
+	close(r.done)
 
 }

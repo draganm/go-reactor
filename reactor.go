@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/julienschmidt/httprouter"
+	pprof "github.com/mistifyio/negroni-pprof"
 	"github.com/urfave/negroni"
 
 	"github.com/draganm/go-reactor/path"
@@ -58,7 +59,7 @@ func (r *Reactor) findScreenFactoryForPath(path string) (ScreenFactory, map[stri
 }
 
 func (r *Reactor) Serve(bind string) {
-	handlers := append(r.handlers, negroni.NewStatic(public.AssetFS()))
+	handlers := append(r.handlers, negroni.NewStatic(public.AssetFS()), pprof.Pprof())
 	n := negroni.New(handlers...)
 
 	router := httprouter.New()
@@ -104,6 +105,7 @@ func (r *Reactor) Serve(bind string) {
 					}
 					currentScreen.Unmount()
 					updater.close()
+					close(uc)
 					return
 				}
 
