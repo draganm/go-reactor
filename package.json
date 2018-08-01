@@ -35,7 +35,7 @@
     "react-dom": "^0.14.8",
     "react-dropzone": "^3.5.3",
     "react-file-input": "^0.2.5",
-    "superagent": "^2.1.0"
+    "superagent": "^3.8.1"
   },
   "browserify": {
     "transform": [
