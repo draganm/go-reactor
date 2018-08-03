@@ -32,7 +32,7 @@
     "react": "^0.14.8",
     "react-addons-update": "^0.14.8",
     "react-bootstrap": "^0.31.1",
-    "react-dom": "^0.14.8",
+    "react-dom": "^16.0.1",
     "react-dropzone": "^3.5.3",
     "react-file-input": "^0.2.5",
     "superagent": "^2.1.0"
