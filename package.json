@@ -27,7 +27,7 @@
     "bootstrap": "^3.3.5",
     "es5-shim": "^4.3.1",
     "history": "^1.12.6",
-    "jquery": "^1.9.1",
+    "jquery": "^3.4.0",
     "lodash": "^3.10.1",
     "react": "^0.14.8",
     "react-addons-update": "^0.14.8",
